@@ -34,12 +34,14 @@ module.exports = {
     'no-unused-vars' : ['off'],
     'import/no-unresolved': ['off'],
     'no-console': ['off'],
+    'import/no-named-as-default': ['off'],
     // allow optionalDependencies
     'import/no-extraneous-dependencies': ['error', {
       'optionalDependencies': ['test/unit/index.js']
     }],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    "linebreak-style": [0 ,"error", "windows"]
   },
   globals: {
     App: true,
