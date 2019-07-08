@@ -10,7 +10,11 @@
     </div>
     <div class='info'>
       <div class='key'>馆藏位置</div>
-      <div class='value'>{{status}}</div>
+      <div class='value'>{{position}}</div>
+    </div>
+    <div class='info'>
+      <div class='key'>图书定位</div>
+      <div class='value' @click=onRFID>点击查看</div>
     </div>
     <div class='info'>
       <div class='key'>索书号</div>
@@ -19,16 +23,6 @@
     <div class='info'>
       <div class='key'>条码</div>
       <div class='value'>{{code}}</div>
-    </div>
-    <div class='info' v-if=reserve>
-      <div class='key'>取书分馆</div>
-      <div class='value'>
-        <picker @change=onLibChange :value=libIndex :range=libs>
-          <image class='book' src='https://system.lib.whu.edu.cn/mp-static/112/立即预约@3x.png' mode='scaleToFill'/>
-          <span>总馆</span>
-          <image class='arrow' src='https://system.lib.whu.edu.cn/mp-static/112/更多 (1)@3x.png' mode='scaleToFill'/>
-        </picker>
-      </div>
     </div>
     <div class='info' v-if=reserve>
       <div class='key'>预约</div>
@@ -42,7 +36,19 @@
 <script>
 export default {
   name: 'DetailCard',
+  created() {
+  },
   props: {
+    libs: {
+      type: Array,
+      required: false,
+      default: ['总馆', '信息馆', '工学分馆', '医学分馆'],
+    },
+    libIndex: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     key: {
       type: Number,
       required: true,
@@ -73,6 +79,11 @@ export default {
       required: true,
       default: '',
     },
+    rfid: {
+      type: String,
+      required: true,
+      default: '',
+    },
     reserve: {
       type: Boolean,
       required: true,
@@ -80,8 +91,6 @@ export default {
     },
   },
   data: {
-    libs: ['总馆', '信息馆', '工学分馆', '医学分馆'],
-    libIndex: 0,
   },
   computed: {
     index() {
@@ -94,7 +103,12 @@ export default {
     },
     onReserve() {
       const that = this;
-      this.$emit('click-reserve', that.key);
+      console.log(that);
+      this.$emit('click-reserve', { key: that.code, pick: that.libIndex });
+    },
+    onRFID() {
+      const that = this;
+      this.$emit('click-rfid', that.rfid);
     },
   },
 };
@@ -130,7 +144,7 @@ export default {
     }
     .value{
       width: 70%;
-      margin-left: 4%;
+      padding-left: 4%;
       background: white;
       position: relative;
       picker{
@@ -139,7 +153,7 @@ export default {
         border-color: #82a6dd;
         border-radius: 10rpx;
         font-size: 30rpx;
-        width: 70%;
+        width: 200rpx;
         margin-top: 2%;
         margin-bottom: 2%;
         display: flex;
@@ -154,7 +168,7 @@ export default {
           left: 2vw;
         }
         .arrow{
-          width: 5vw;
+          width: 3vw;
           height: 2vw;
           position: absolute;
           right: 2vw;
@@ -162,13 +176,14 @@ export default {
         }
       }
       button{
-        font-size: 30rpx;
+        font-size: 23rpx;
         border-radius: 100rpx;
         background: #82a6dd;
         color: white;
         margin-top: 1%;
         margin-bottom: 1%;
-        width: 50%;
+        width: 150rpx;
+        height: 41rpx;;
         position: absolute;
         line-height: 40rpx;
       }

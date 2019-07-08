@@ -2,10 +2,11 @@
 <div class='search-result-list'>
   <search-result-card
   v-for='(item, index) in result'
-  :key=index
-  :name=item.name
+  :key=item.index
+  :name=item.title
   :author=item.author
   :publish=item.publish
+  :book=item
   @click-card=onClickCard
   />
 </div>
@@ -25,6 +26,8 @@ export default {
       required: true,
       default: () => [],
     },
+  },
+  onLoad() {
   },
   methods: {
     onClickCard(key) {

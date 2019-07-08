@@ -1,26 +1,25 @@
 <template>
-  <div class='borrow-card' :class="{ 'selected': isSelected }" @click=onClick>
+  <div class='history-card' @click=onClick>
     <div class='circle'/>
     <div class='line'/>
     <div class='title'>
+      <span class='index'></span>
       <span class='name'>{{name}}</span>
     </div>
-    <div class='info'>
-      <span class='author'>{{author}}&nbsp;著</span>
+    <div class='author'>
+      <span class='key'>作者：</span>
+      <span class='value'>{{author}}&nbsp;</span>
     </div>
-    <div class='info'>
-      <span class='position'>{{position}}</span>
-      <span class='time'>{{fromTime}}至{{toTime}}</span>
+    <div class='publish'>
+      <span class='key'>借阅时间：</span>
+      <span class='value'>{{fromtime}}</span>
     </div>
-    <button class='ratio'>
-      <image :class="{ 'ratio-selected': isSelected }" src='https://system.lib.whu.edu.cn/mp-static/131/椭圆 11@3x.png'/>
-    </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'BorrowCard',
+  name: 'historyCard',
   props: {
     key: {
       type: Number,
@@ -42,7 +41,7 @@ export default {
       required: true,
       default: '',
     },
-    fromTime: {
+    fromtime: {
       type: String,
       required: true,
       default: '',
@@ -74,7 +73,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.borrow-card{
+.history-card{
   margin-top: 2%;
   margin-bottom: 2%;
   border-style: solid;
@@ -87,6 +86,27 @@ export default {
   padding-right: 3%;
   background-color: white;
   position: relative;
+  .title{
+    display: flex;
+    font-size: 40rpx;
+    font-weight: bold;
+  }
+  .author{
+    display: flex;
+    font-size: 24rpx;
+    color: #777777;
+    .value{
+      font-weight: normal;
+    }
+  }
+  .publish{
+    display: flex;
+    font-size: 24rpx;
+    color: #777777;
+    .value{
+      font-weight: normal;
+    }
+  }
   .line{
     width: 1px;
     height: 85%;
@@ -111,22 +131,22 @@ export default {
     display: flex;
     font-size: 30rpx;
     align-items: center;
-    font-weight: bold;
-    color: #525252;
+    color: #444444;
     margin-top: 1.5vh;
     margin-bottom: 1.5vh;
     .name{
+      font-weight: bold;
       margin-right: 4vw;
     }
     .author{
       font-size: 24rpx;
       font-weight: normal;
-      color: #777777;
+      color: grey;
     }
   }
   .info{
     display: flex;
-    font-size: 25rpx;
+    font-size: 24rpx;
     color: #777777;
     justify-content: space-between;
   }

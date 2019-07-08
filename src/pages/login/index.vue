@@ -1,15 +1,14 @@
 <template>
   <div class='container'>
-    <image class='bk' src='https://system.lib.whu.edu.cn/mp-static/340/上方@3x.png' mode='aspectFill'/>
+    <image class='bk' src='https://system.lib.whu.edu.cn/mp-static/340/上方@3x.png' mode='aspectFill' :style="{ height: picHeight}" />
     <button v-if=login type='default' open-type='getUserInfo' @getuserinfo='getUserInfo' @click='wxlogin'>
       <span>微信快速登录</span>
-      <image src='https://system.lib.whu.edu.cn/mp-static/340/矩形 5@3x.png' mode='scaleToFill'/>
     </button>
     <div class='bind-container' v-if=!login>
       <div class='input-container'>
         <image src='https://system.lib.whu.edu.cn/mp-static/340/证件@3x.png' style='width:3.5vh; height:2.5vh;'/>
         <span>&nbsp;学&nbsp;&nbsp;号&nbsp;</span>
-        <input class='un-input' type='number' placeholder='请输入学号或学工号' @input=inputUsername confirm-type='next'/>
+        <input class='un-input' placeholder='请输入学号或学工号' @input=inputUsername confirm-type='next' @focus=onFocus />
       </div>
       <div class='input-container' style='top: 10vh;'>
         <image src='https://system.lib.whu.edu.cn/mp-static/340/密码@3x.png' style='width:3.5vh; height:3.5vh;'/>
@@ -22,13 +21,14 @@
       </button>
       <button id='exit' type='default' @click='exit'>
         <span>以后再说</span>
-        <image src='https://system.lib.whu.edu.cn/mp-static/340/矩形 5 副本@3x.png' mode='scaleToFill'/>
       </button>
     </div>
   </div>
 </template>
 
 <script>
+import JSEncrypt from 'jsencrypt';
+
 export default {
   mpType: 'page',
   data: {
@@ -37,7 +37,19 @@ export default {
     password: '',
     code: '',
   },
+  computed: {
+    picHeight() {
+      return this.login ? '744rpx' : '653rpx';
+    },
+  },
+  onUnLoad() {
+    this.userName = '';
+    this.password = '';
+  },
   onLoad(options) {
+    wx.setNavigationBarTitle({
+      title: '账号登录',
+    });
     const { type } = options;
     if (type === 'login') {
       this.login = true;
@@ -49,6 +61,12 @@ export default {
     }
   },
   methods: {
+    onFocus() {
+      wx.pageScrollTo({
+        scrollTop: 0,
+        duration: 300,
+      });
+    },
     wxlogin() {
       const that = this;
       wx.login({
@@ -61,7 +79,7 @@ export default {
       if (this.userName === '' || this.password === '') {
         wx.showToast({ title: '学号/密码不能为空', icon: 'none' });
       } else {
-        this.$store.dispatch('bindLibAccount', { libId: this.userName, libPsw: this.password });
+        this.$store.dispatch('bindLibAccount', { session: this.$store.getters.getSession, libId: this.userName, libPsw: this.password });
       }
     },
     getUserInfo(e) {
@@ -73,6 +91,8 @@ export default {
           encryptedData,
           iv,
           userInfo,
+        }).then((res) => {
+          // wx.navigateBack({ delta: 1 });
         });
         if (this.$store.getters.getLibBind) {
           wx.navigateBack({ delta: 1 });
@@ -88,7 +108,16 @@ export default {
       this.userName = e.mp.detail.value;
     },
     inputPassword(e) {
-      this.password = e.mp.detail.value;
+      const encrypt = new JSEncrypt();
+      const PUB_KEY = `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMRWy62srQJhljxzaxbSjbl6R3
+bA4dXTEdVhcSB7ZDM54axZFmikmOdiAZ7kD4xdRysdp1P+vRjBIWMFJeyYN8v/p+
+NqJT8o2Y8nJdmBTX7e0JkwIiEgSORlXai+eR3e8eBOtBQ8EUwSSi0bgkLOkOTQ7/
+CPDsDJ7vp7Q2+WLvlQIDAQAB
+-----END PUBLIC KEY-----`;
+      encrypt.setPublicKey(PUB_KEY);
+      console.log(encrypt.encrypt(e.mp.detail.value));
+      this.password = encrypt.encrypt(e.mp.detail.value);
     },
   },
   created() {
@@ -107,9 +136,9 @@ export default {
   background: #f7f7f7;
   .bk{
     position: absolute;
-    top: -35vw;
+    top: 0vw;
     width: 100vw;
-    height: 120vw;
+    height: 160vw;
   }
   button{
     position: absolute;
@@ -118,7 +147,8 @@ export default {
     height: 8vh;
     padding: 0%;
     border: none;
-    border-radius: 0px;
+    background-color: #4F8ADD;
+    border-radius: 4vh;
     image{
       width: 100%;
       height: 100%;
@@ -146,22 +176,44 @@ export default {
       height: 8vh;
       justify-content: center;
       align-content: center;
+      font-size: 30rpx;
+      image{
+        margin-top: 5%;
+      }
+      span{
+        margin-top: 5%;
+      }
       input{
+        height: 72rpx;
+        font-size: 24rpx;
+        padding-left: 13rpx;
+        padding-top: 3rpx;
         border-style: solid;
         border-width: 1px;
         border-color: grey;
+        justify-content: center;
+        align-content: center;
+        align-self:center;
+        justify-self:center;
+        width: 490rpx;
       }
     }
     #bind{
       bottom: 20vh;
+      border-radius: 0;
       span{
         left: 35vw;
       }
     }
     #exit{
+      background-color: rgba($color: #000000, $alpha: 0.0);
+      border: #525252;
+      border-width: 1rpx;
+      border-radius: 0;
       span{
-        color: black;
+        color: #525252;
         left: 34vw;
+        font-size: 36rpx
       }
     }
   }

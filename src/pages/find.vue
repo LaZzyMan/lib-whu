@@ -7,8 +7,8 @@
               indicator-color="#fff">
           <block v-for='(item, index) in banner_url' :key=index>
             <swiper-item>
-              <block :wx:if="item.pic">
-                <image class="scroll-image" :src="item.pic"  mode="aspectFill"/>
+              <block :wx:if="item.img_url">
+                <image class="scroll-image" :src="item.img_url"  mode="aspectFill" @click='onClickPic(item.url)' />
               </block>
             </swiper-item>
           </block>
@@ -17,12 +17,15 @@
     </scroll-view>
     <div class="find-tittle">
         <span>&nbsp;&nbsp;教学培训&nbsp;</span>
+        <div class="tittle-en">
+          <span>TEACHING &TRAINING</span>
+        </div>
     </div>
     <div class='education-button-container'>
-      <button type='default' @click='toTraining'>
+      <button type='default' @click='toUnfinished'>
         <image src='https://system.lib.whu.edu.cn/mp-static/200/日程 (1)@3x.png' mode='aspectFit'/>
       </button>
-      <button type='default' @click='toWeiKe'>
+      <button type='default' @click='toUnfinished'>
         <image src='https://system.lib.whu.edu.cn/mp-static/200/视频 (2) 副本@3x.png' mode='aspectFit'/>
       </button>
       <button type='default' @click='toUnfinished'>
@@ -33,20 +36,23 @@
       </button>
       <span>培训日程</span>
       <span>小布微课</span>
-      <span>小布微课</span>
+      <span>往期培训</span>
       <span>使用攻略</span>
     </div>
     <div class="find-tittle">
       <span>&nbsp;&nbsp;新生专栏&nbsp;</span>
+        <div class="tittle-en">
+          <span>FRESHMAN COLUMN</span>
+        </div>
     </div>
     <div class='education-button-container'>
-      <button type='default' @click='toUnfinished'>
+      <button type='default' @click='toAbout'>
         <image src='https://system.lib.whu.edu.cn/mp-static/200/我的图书馆@3x.png' mode='aspectFit'/>
       </button>
       <button type='default' @click='toUnfinished'>
         <image src='https://system.lib.whu.edu.cn/mp-static/200/书 (2)@3x.png' mode='aspectFit'/>
       </button>
-      <button type='default' @click='toUnfinished'>
+      <button type='default' @click='toCurator'>
         <image src='https://system.lib.whu.edu.cn/mp-static/200/lingdao@3x.png' mode='aspectFit'/>
       </button>
       <button type='default' @click='toUnfinished'>
@@ -59,6 +65,9 @@
     </div>
     <div class="find-tittle">
       <span>&nbsp;&nbsp;移动数据库&nbsp;</span>
+        <div class="tittle-en">
+          <span>MOBILE  DATABASE</span>
+        </div>
     </div>
     <div class='education-button-container'>
       <button type='default' @click='toUnfinished'>
@@ -83,25 +92,28 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import { getActivity } from '../api';
 
 export default {
   mpType: 'page',
+  onLoad(options) {
+    wx.showLoading({ title: '加载中...' });
+    const { value } = options;
+    const that = this;
+    getActivity({
+      session: that.$store.getters.getSession,
+    }).then((response) => {
+      if (response.count !== 0) {
+        that.banner_url = response.results;
+      }
+      wx.hideLoading();
+    });
+  },
   config: {
   },
   data() {
     return {
-      banner_url: [
-        {
-          pic: 'https://system.lib.whu.edu.cn/mp-static/200/banner1 拷贝@3x.png',
-          url: '',
-          id: 0,
-        },
-        {
-          pic: 'https://system.lib.whu.edu.cn/mp-static/200/banner1 拷贝@3x.png',
-          url: '',
-          id: 1,
-        },
-      ],
+      banner_url: [],
       open: false,
       indicatorDots: true,
       autoplay: true,
@@ -121,16 +133,63 @@ export default {
       'decrement',
     ]),
     toTraining() {
-      console.log('training');
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/training';
       wx.navigateTo({ url });
     },
     toUnfinished() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/unfinished';
       wx.navigateTo({ url });
     },
     toWeiKe() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/weike';
+      wx.navigateTo({ url });
+    },
+    toCurator() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
+      const url = '/pages/curator';
+      wx.navigateTo({ url });
+    },
+    toAbout() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
+      const url = '/pages/about';
+      wx.navigateTo({ url });
+    },
+    onClickPic(aurl) {
+      this.$store.dispatch('setActivityUrl', aurl);
+      const url = '/pages/notice/activity';
       wx.navigateTo({ url });
     },
   },
@@ -140,7 +199,7 @@ export default {
 <style lang="scss" scoped>
 .find-view{
   width: 750rpx;
-  height: 1224rpx;
+  height: 100vh;
   padding-left: 8rpx;
   padding-right: 11rpx;
   padding-top: 22rpx;
@@ -167,17 +226,29 @@ export default {
       margin-right: 67rpx;
       margin-top: 31rpx; 
       margin-bottom: 12rpx;
+      display: flex;
+      display: -webkit-flex;
+      flex-wrap: wrap;
+      -webkit-flex-direction: row;
+      flex-direction: row;
       span{
         font-size: 30rpx;
         color: #525252;
+      }
+      .tittle-en{
+        margin-left: 288rpx;
+        span{
+          font-size: 18rpx;
+          color: #525252;
+        }
       }
   }
   .education-button-container{
     display: flex;
     margin-top: 12rpx;
-    margin-left: 73rpx;
+    margin-left: 70rpx;
     margin-right: 28rpx;
-    width: 646rpx;
+    width: 649rpx;
     height: 190rpx;
     flex-wrap: wrap;
     button::after{
@@ -203,8 +274,8 @@ export default {
         justify-content: center;
         font-size: 24rpx;
         margin-top: 0vh;
-        margin-left: 12rpx;
-        margin-right: 52rpx;
+        margin-left: 14.5rpx;
+        margin-right: 53.5rpx;
         color: #525252;
       }
 

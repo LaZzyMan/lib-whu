@@ -2,7 +2,7 @@
 // make sure to call Vue.use(Vuex) if using a module system
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { vertifySession, updateSession, bindLib, vertifyLibAccount, login } from '../api';
+import { vertifySession, updateSession, bindLib, vertifyLibAccount, login, unbindLib } from '../api';
 
 Vue.use(Vuex);
 
@@ -13,10 +13,19 @@ const store = new Vuex.Store({
     login: false,
     libBind: false,
     userInfo: {},
+    libUser: {},
+    searchHistory: [],
+    activityUrl: '',
   },
   getters: {
     getSession(state) {
       return state.session;
+    },
+    getActivityUrl(state) {
+      return state.activityUrl;
+    },
+    getsearchHistory(state) {
+      return state.searchHistory;
     },
     getLogin(state) {
       return state.login;
@@ -24,14 +33,30 @@ const store = new Vuex.Store({
     getLibBind(state) {
       return state.libBind;
     },
+    getLibUser(state) {
+      return state.libUser;
+    },
   },
   actions: {
     setSession({ commit, state }, session) {
+      commit('setSession', session);
+      console.log('session');
+      console.log(session);
+    },
+    setActivityUrl({ commit, state }, activityUrl) {
+      commit('setActivityUrl', activityUrl);
+    },
+    vertifyLogin({ commit, state }, par) {
+      // eslint-disable-next-line prefer-destructuring
+      const session = par.ses;
+      commit('setLibUser', par.user);
+      wx.setStorageSync('session', session);
       if (session === '') {
         wx.navigateTo({ url: '/pages/login?type=login' });
         return;
       }
       vertifySession({ session }).then((response) => {
+        console.log(par.user);
         console.log(response);
         if (!response.login) {
           wx.navigateTo({ url: '/pages/login?type=login' });
@@ -54,7 +79,7 @@ const store = new Vuex.Store({
           },
         });
         commit('setLibBind', response.libBind);
-        commit('setSession', session);
+        commit('setSession', response.session);
       }).catch(() => {
         wx.navigateTo({ url: '/pages/error?type=0' });
       });
@@ -73,23 +98,34 @@ const store = new Vuex.Store({
         commit('setSession', response.session);
         commit('setLogin', true);
         commit('setLibBind', response.libBind);
-        wx.setStorageSync('session', response.session);
         wx.hideLoading();
         if (response.libBind) {
           wx.navigateBack({ delta: 1 });
         }
       });
     },
+    unbindLibAccount({ commit, state }, info) {
+      unbindLib(info).then((response) => {
+        if (response.status === 0) {
+          commit('setLibBind', false);
+          wx.navigateTo({ url: 'info' });
+        }
+      }).catch(() => {
+        wx.showToast({ title: '网络异常', icon: 'none' });
+      });
+    },
     bindLibAccount({ commit, state }, info) {
       const { session } = state;
-      console.log(info);
       vertifyLibAccount(info).then((response) => {
+        console.log(response);
         if (response.status === 0) {
-          console.log(response);
-          bindLib({ session, libId: info.libId }).then((r) => {
+          commit('setLibUser', response.user);
+          console.log(1);
+          wx.setStorageSync('libUser', response.user);
+          bindLib({ session: response.session, libId: info.libId }).then((r) => {
+            console.log(r);
             wx.showToast({ title: '绑定成功', icon: 'success' });
             commit('setLibBind', true);
-            commit('setUserInfo', response.user);
             wx.navigateBack({ delta: 1 });
           });
         } else {
@@ -101,6 +137,18 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
+    setLibUser(state, libUser) {
+      // eslint-disable-next-line no-param-reassign
+      state.libUser = libUser;
+    },
+    setActivityUrl(state, activityUrl) {
+      // eslint-disable-next-line no-param-reassign
+      state.activityUrl = activityUrl;
+    },
+    setsearchHistory(state, searchHistory) {
+      // eslint-disable-next-line no-param-reassign
+      state.searchHistory = searchHistory;
+    },
     setSession(state, session) {
       // eslint-disable-next-line no-param-reassign
       state.session = session;

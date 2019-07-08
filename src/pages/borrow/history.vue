@@ -1,5 +1,8 @@
 <template>
   <div class='container'>
+    <div class='total'>
+      <span>列出了总共{{result.length}}条中的{{result.length}}条外借信息</span>
+    </div>
     <div class='list-container'>
       <scroll-view
       class='list-container'
@@ -7,48 +10,43 @@
       enable-back-to-top=true
       @scrolltolower=onScrollToBottom>
         <div class="tip" v-if="result.length===0">
-          <span>无借阅图书</span>
+          <span>无借阅历史</span>
         </div>
-        <borrow-list :result=result @click-card=onClickCard />
+        <history-list :result=result @click-card=onClickCard />
       </scroll-view>
-    </div>
-    <div class='control-container'>
-      <div class='select-all' @click=onSelectAll>
-        <image src='https://system.lib.whu.edu.cn/mp-static/130/圆角矩形 3@3x.png'/>
-        <image style='position:absolute;' src='https://system.lib.whu.edu.cn/mp-static/131/勾@3x.png' v-if="all"/>
-        <span>全选</span>
-      </div>
-      <button class='con-borrow' @click="onRenew">续借</button>
     </div>
   </div>
 </template>
 
 <script>
-import borrowList from '../../components/list/borrowList';
-import { getBorrowInfo, borrowRenew } from '../../api';
+import historyList from '../../components/list/historyList';
+import { getLoanHistory } from '../../api';
 
 export default {
   mpType: 'page',
   onLoad(options) {
     wx.setNavigationBarTitle({
-      title: '借阅信息',
+      title: '借阅历史',
     });
     wx.showLoading({ title: '加载中...' });
     const { value } = options;
     const that = this;
-    getBorrowInfo({
+    getLoanHistory({
       session: that.$store.getters.getSession,
     }).then((response) => {
       if (response.status === 0) {
         let i = 0;
         that.result = response.result.map((e) => {
-          const tmp = e;
+          const tmp = {};
           tmp.isSelected = false;
+          tmp.book_info = { title: e.booktitle, author: e.author };
+          tmp.loan_info = { loan_date: this.insertStr(this.insertStr(e.loandate, 4, '/'), 7, '/') };
           return tmp;
         });
         for (i = 0; i < that.result.length; i += 1) {
           that.result[i].index = i;
         }
+        console.log(that.result);
       }
       wx.hideLoading();
     });
@@ -58,42 +56,18 @@ export default {
     all: false,
   },
   components: {
-    borrowList,
+    historyList,
   },
   computed: {
-    selectedBooks() {
-      const list = [];
-      this.result.forEach((element) => {
-        if (element.isSelected) {
-          list.push(element);
-        }
-      });
-      return list;
-    },
   },
   methods: {
     onClickCard(key) {
-      this.result[key].isSelected = !this.result[key].isSelected;
+      // this.result[key].isSelected = !this.result[key].isSelected;
     },
     onRenew() {
-      const that = this;
-      const success = [];
-      const fail = [];
-      this.selectedBooks.forEach((element) => {
-        borrowRenew({
-          session: that.$store.getters.getSession,
-          bar_code: element.bar_code,
-        }).then((response) => {
-          console.log(response);
-          if (response.status === 0) {
-            success.push(element.book_info.title);
-            wx.showToast({ title: `${element.book_info.title}续借成功`, icon: 'none' });
-          } else {
-            fail.push(element.book_info.title);
-            wx.showToast({ title: `${element.book_info.title}续借失败`, icon: 'none' });
-          }
-        });
-      });
+    },
+    insertStr(soure, start, newStr) {
+      return soure.slice(0, start) + newStr + soure.slice(start);
     },
     onSelectAll() {
       this.all = !this.all;
@@ -137,10 +111,9 @@ export default {
   background-color: #f7f7f7;
   height: 100vh;
   .list-container{
-    height: 80vh;
+    height: 98vh;
     padding-bottom: 2vh;
     padding-top: 1vh;
-    background: white;
     border-radius: 20rpx;
     .tip{
       span{
@@ -170,14 +143,15 @@ export default {
         height: 5vw;
       }
     }
-    .con-borrow{
-      width: 40vw;
-      border-radius: 100rpx;
-      background: #4a88dd;
-      color: white;
-      position: absolute;
-      right:0;
-    }
   }
 }
+.total{
+  font-size:28rpx;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(57,57,57,1);
+line-height:36rpx;
+margin-left: 67rpx;
+}
+
 </style>

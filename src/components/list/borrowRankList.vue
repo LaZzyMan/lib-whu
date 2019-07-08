@@ -2,12 +2,12 @@
 <div class='borrow-rank-list'>
   <borrow-rank-card
   v-for='(item, index) in result'
-  :key=index
-  :name=item.name
+  :key=item.index
+  :name=item.title
   :author=item.author
   :rate=item.rate
-  :rank=item.rank
-  :borrow-times=item.borrowTimes
+  :rank=item.index+1
+  :borrow-times=item.bor_num
   @click-card=onClickCard
   />
 </div>

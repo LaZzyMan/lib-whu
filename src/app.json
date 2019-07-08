@@ -31,6 +31,18 @@
       "route": "pages/weike"
     },
     {
+      "path": "pages/freshman/curator",
+      "config":{
+      },
+      "route": "pages/curator"
+    },
+    {
+      "path": "pages/freshman/about",
+      "config":{
+      },
+      "route": "pages/about"
+    },
+    {
       "path": "pages/search",
       "config":{
       },
@@ -49,6 +61,12 @@
       "route": "pages/search/detail"
     },
     {
+      "path": "pages/search/rfid",
+      "config":{
+      },
+      "route": "pages/search/rfid"
+    },
+    {
       "path": "pages/borrow/borrow",
       "config":{
       },
@@ -59,6 +77,18 @@
       "config":{
       },
       "route": "pages/borrow/rank"
+    },
+    {
+      "path": "pages/borrow/reserve",
+      "config":{
+      },
+      "route": "pages/borrow/reserve"
+    },
+    {
+      "path": "pages/borrow/history",
+      "config":{
+      },
+      "route": "pages/borrow/history"
     },
     {
       "path": "pages/card/card",
@@ -79,6 +109,12 @@
       "route": "pages/information"
     },
     {
+      "path": "pages/entry/entry",
+      "config":{
+      },
+      "route": "pages/entry"
+    },
+    {
       "path": "pages/seatReserve",
       "config":{
       },
@@ -89,6 +125,12 @@
       "config":{
       },
       "route": "pages/seatReserve/announcement"
+    },
+    {
+      "path": "pages/notice/activity",
+      "config":{
+      },
+      "route": "pages/notice/activity"
     },
     {
       "path": "pages/seatReserve/myReservation",

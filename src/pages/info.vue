@@ -1,20 +1,22 @@
 <template>
   <div class='info-view'>
     <div class="info-logon">
-      <open-data class='avatar' type=userAvatarUrl lang=zh_CN />
+      <open-data class='avatar' type=userAvatarUrl lang=zh_CN v-if='login'/>
+      <image class='avatar' src='https://system.lib.whu.edu.cn/mp-static/320/矢量免扣卡通人物@3x.png' v-if='!login' />
       <view @click="onClick">
-        <open-data type=userNickName lang=zh_CN />
-        <span>{{user.name}}&nbsp;{{user.id}}</span>
+        <open-data type=userNickName lang=zh_CN v-if='login'/>
+        <div v-if='!login'>点击登录</div>
+        <span>{{user.name}}&nbsp;{{user.bor_id}}</span>
       </view>
       <div/>
     </div>
     <div class="info-margin"/>
     <div class="info-list">
       <div class="info-margin"/>
-      <div class="info-line" @click="toCard" :disabled='disabled'>
+      <div class="info-line" @click="toUnfinished" :disabled='disabled'>
         <image :src=picurl.cardpic mode='aspectFit'/>
         <div>
-          <span>&nbsp;电子校园卡</span>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;电子校园卡</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -27,7 +29,7 @@
       <div class="info-line" :disabled='disabled' @click="toUnfinished">
         <image :src=picurl.zhangdanpic mode='aspectFit'/>
         <div>
-          <span>&nbsp;图书馆账单</span>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;图书馆账单</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -40,7 +42,7 @@
       <div class="info-line" @click="toBorrow">
         <image :src=picurl.jieyuepic mode='aspectFit'/>
         <div>
-          <span>&nbsp;借阅信息</span>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;借阅信息</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -50,10 +52,10 @@
         <view class="divLine"></view>
       </div>
       <div class="info-margin"/>
-      <div class="info-line" :disabled='disabled'>
+      <div class="info-line" :disabled='disabled' @click="toHistory">
         <image :src=picurl.lishipic mode='aspectFit'/>
         <div>
-          <span>&nbsp;借阅历史</span>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;借阅历史</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -63,10 +65,23 @@
         <view class="divLine"></view>
       </div>
       <div class="info-margin"/>
-      <div class="info-line" :disabled='disabled'>
+      <div class="info-line" :disabled='disabled' @click="toReserve">
         <image :src=picurl.yuyuepic mode='aspectFit'/>
         <div>
-          <span>&nbsp;预约结果</span>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;预约结果</span>
+          <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
+        </div>
+      </div>
+      <div class="info-margin">
+      </div>
+      <div class="info-underscores">
+        <view class="divLine"></view>
+      </div>
+      <div class="info-margin"/>
+      <div class="info-line" :disabled='disabled' @click="toEntry">
+        <image :src=picurl.ruguanpic mode='aspectFit'/>
+        <div>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;入馆记录</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -76,10 +91,10 @@
     <div class="info-margin"/>
     <div class="info-list">
       <div class="info-margin"/>
-      <div class="info-line" :disabled='disabled'>
+      <div class="info-line" :disabled='disabled' @click="toUnfinished">
         <image :src=picurl.ziyuanpic mode='aspectFit'/>
         <div>
-          <span>&nbsp;资源导购</span>
+          <span :class="{ 'list-disabled': !disabled }">&nbsp;资源荐购</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -92,7 +107,7 @@
       <div class="info-line" @click="toSuggest" :disabled='disabled'>
         <image :src=picurl.jianyipic mode='aspectFit'/>
         <div>
-          <span>&nbsp;建议与反馈</span>
+          <span >&nbsp;建议与反馈</span>
           <image src='https://system.lib.whu.edu.cn/mp-static/320/更多 (1)@3x.png' mode='aspectFit'/>
         </div>
       </div>
@@ -100,7 +115,7 @@
       </div>
     </div>
     <div class="info-margin"/>
-    <div class="info-list">
+    <div class="info-list" v-if="disabled" >
       <div class="info-margin"/>
         <div class="info-bind" @click="onLogin">
           <span>{{text}}</span>
@@ -108,12 +123,18 @@
       </div>
       <div class="info-margin">
       </div>
+      <tip-modal :showModal="showModal" text='解除绑定后将无法使用座位预约、借阅信息查询等功能，重新绑定即可查看' title='确定解绑？' @confirm=onConfirm @cancel=onCancel />
   </div>
 </template>
 
 <script>
+import tipModal from '../components/modal/tipModal';
+
 export default {
   mpType: 'page',
+  components: {
+    tipModal,
+  },
   data() {
     return {
       piclist: {
@@ -124,6 +145,7 @@ export default {
         yuyuepic: '预约 (1)@3x.png',
         ziyuanpic: '购物车@3x.png',
         jianyipic: '建议 (1)@3x.png',
+        ruguanpic: 'zanwucanyujilu@2x.png',
       },
       picurl: {
         cardpic: 'https://system.lib.whu.edu.cn/mp-static/320/卡 (1)@3x.png',
@@ -134,6 +156,7 @@ export default {
         ziyuanpic: 'https://system.lib.whu.edu.cn/mp-static/320/购物车@3x.png',
         jianyipic: 'https://system.lib.whu.edu.cn/mp-static/320/建议 (1)@3x.png',
       },
+      showModal: false,
       disabled: false,
       text: '点击绑定',
       user: {
@@ -150,15 +173,13 @@ export default {
       baseurl = 'https://system.lib.whu.edu.cn/mp-static/330/';
       t.disabled = true;
       t.text = '解除绑定';
-      t.user = Object({
-        name: '李安国',
-        id: '2017*****007',
-        pic: 'https://system.lib.whu.edu.cn/mp-static/330/图层 1@3x.png',
-      });
+      t.user = t.$store.getters.getLibUser;
     } else {
       baseurl = 'https://system.lib.whu.edu.cn/mp-static/320/';
       t.disabled = false;
       t.text = '点击绑定';
+      if (this.login) t.user = { name: '点击绑定' };
+      else t.user = { name: '登录更精彩' };
     }
     const a = {};
     Object.keys(t.piclist).forEach((key) => {
@@ -167,6 +188,12 @@ export default {
     t.picurl = a;
   },
   computed: {
+    login() {
+      return this.$store.getters.getLogin;
+    },
+  },
+  onUnload() {
+    this.showModal = false;
   },
   methods: {
     onClick() {
@@ -174,37 +201,94 @@ export default {
         const url = '/pages/information';
         wx.navigateTo({ url });
       } else {
-        const url = '/pages/login';
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
         wx.navigateTo({ url });
       }
     },
+    onConfirm() {
+      this.showModal = false;
+      const that = this;
+      that.$store.dispatch('unbindLibAccount', { session: that.$store.getters.getSession });
+      that.disabled = false;
+      const url = '/pages/login';
+      wx.navigateTo({ url });
+    },
+    onCancel() {
+      this.showModal = false;
+    },
     onLogin() {
-      if (this.disabled) {
-        wx.showModal({
-          title: '确定解绑？',
-          content: '解除绑定后将无法使用座位预约、借阅信息查询等功能，重新绑定即可查看',
-          success(res) {
-            if (res.confirm) {
-              console.log('用户点击确定');
-            } else if (res.cancel) {
-              console.log('用户点击取消');
-            }
-          },
-        });
-      } else {
-        this.onClick();
+      this.showModal = true;
+    },
+    toReserve() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
       }
+      const url = 'borrow/reserve';
+      wx.navigateTo({ url });
+    },
+    toHistory() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
+      const url = 'borrow/history';
+      wx.navigateTo({ url });
+    },
+    toEntry() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
+      const url = '/pages/entry';
+      wx.navigateTo({ url });
     },
     toCard() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/card';
       wx.navigateTo({ url });
     },
     toBorrow() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/borrow';
       wx.navigateTo({ url });
     },
     toSuggest() {
       const url = '/pages/suggest';
+      wx.navigateTo({ url });
+    },
+    toUnfinished() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
+      const url = '/pages/unfinished';
       wx.navigateTo({ url });
     },
   },
@@ -216,20 +300,12 @@ export default {
   width: 100%;
   height: 100vh;
   background-color: #f7f7f7;
-  .info-image{
-    width: 96vw;
-    height: 27vh;
-    padding-bottom: 2vh;
-    image{
-      width: 100%;
-      height: 100%;
-    }
-  }
   .info-bind{
     width: 100%;
     display: flex;
     align-items: center;
     justify-content:center;
+    height: 92rpx;
     span{
       display: flex;
     }
@@ -259,6 +335,12 @@ export default {
       color: #393939;
       display: flex;
       flex-direction: column;
+      div{
+        padding: 0;
+        width: 178rpx;
+        font-size: 43rpx;
+        height: 62rpx;;
+      }
       span{
         margin-left: 2rpx;
         font-size: 30rpx;
@@ -289,25 +371,26 @@ export default {
     display: flex;
     display: -webkit-flex;
     flex-wrap: wrap;
-    height: 5vh;
+    height: 87rpx;
     background-color: #ffffff;
     -webkit-flex-direction: column;
     image{
-      padding-top:2.5%;
-      width: 15%;
-      height: 90%;
+      margin-top:21rpx;
+      margin-left: 36rpx;
+      width: 54rpx;
+      height: 54rpx;
       align-items: left;
       justify-content: left;
     }
     div{
-      width: 80%;
+      width: 660rpx;
       height: 100%;
       display: flex;
       flex-wrap: wrap;
       span{
-        padding-top:1.25vh;
-        font-size: 0.9;
-        width: 95%;
+        padding-top:20rpx;
+        font-size: 31rpx;
+        width: 600rpx;
       }
       span:disabled{
         color: #ABABAB;
@@ -316,14 +399,18 @@ export default {
         color: #000;
       }
       image{
-        padding-top:1.5vh;
-        width: 5%;
-        height: 60%;
+        margin-top:20rpx;
+        margin-left: 0;
+        width: 15rpx;
+        height: 27rpx;
         align-items: right;
         justify-content: right;
       }
     }
   }
+}
+.list-disabled{
+  color: #ABABAB;
 }
 </style>
 

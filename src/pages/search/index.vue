@@ -20,10 +20,13 @@
       </picker>
       <div class='input-container'>
         <image src='https://system.lib.whu.edu.cn/mp-static/110/搜索@3x.png' mode='scaleToFill'/>
-        <input class='search-input' type='text' placeholder='搜索' @confirm=onInputSearch focus=true/>
+        <input class='search-input' type='text' placeholder='搜索' @confirm=onInputSearch :focus="focus" @input=onBindinput />
+      </div>
+      <div class="search-search-button" @click=onInputSearch v-if=true>
+        <span>搜索</span>
       </div>
     </div>
-    <div class='search-history-bar'>
+    <div class='search-history-bar' @click="onClickDelete">
       <span>历史搜索</span>
       <image src='https://system.lib.whu.edu.cn/mp-static/110/垃圾桶@3x.png' mode='scaleToFill'/>
     </div>
@@ -37,34 +40,46 @@
 <script>
 export default {
   mpType: 'page',
+  onLoad() {
+    wx.setNavigationBarTitle({
+      title: '馆藏查询',
+    });
+  },
   data: {
     lang: 'cn',
     cnStyle: {
       src: 'https://system.lib.whu.edu.cn/mp-static/110/圆角矩形 10@3x.png',
       color: 'white',
     },
+    focus: true,
     enStyle: {
       src: 'https://system.lib.whu.edu.cn/mp-static/110/圆角矩形 10 副本@3x.png',
       color: '#4A88DD',
     },
-    searchType: ['全面检索', '题名', '著者', '索书号', 'ISSN', 'ISBN'],
+    searchType: ['全部', '题名', '著者', '索书号', 'ISSN', 'ISBN'],
     index: 0,
     searchContent: '',
-    searchHistory: [
-      { name: '明朝那些事' },
-      { name: '明朝那些事' },
-      { name: '活着' },
-      { name: '明朝那些事' },
-      { name: '活着' },
-      { name: '明朝那些事' },
-      { name: '活着' },
-      { name: '明朝那些事' },
-      { name: '明朝那些事' },
-    ],
+    searchHistory: wx.getStorageSync('searchHistory') || [],
+    value: '',
+  },
+  watch: {
+    searchHistory: {
+      handler(val, oldVal) {
+        wx.setStorageSync('searchHistory', val);
+      },
+      deep: true,
+    },
   },
   methods: {
+    onClickDelete() {
+      this.searchHistory = [];
+    },
+    onBindinput(e) {
+      this.value = e.mp.detail.value;
+    },
     onSwitchToCN() {
       this.lang = 'cn';
+      this.focus = true;
       this.cnStyle = {
         src: 'https://system.lib.whu.edu.cn/mp-static/110/圆角矩形 10@3x.png',
         color: 'white',
@@ -76,6 +91,7 @@ export default {
     },
     onSwitchToEN() {
       this.lang = 'en';
+      this.focus = true;
       this.enStyle = {
         src: 'https://system.lib.whu.edu.cn/mp-static/110/圆角矩形 10@3x.png',
         color: 'white',
@@ -89,15 +105,20 @@ export default {
       this.index = Number(e.target.value);
     },
     onInputSearch(e) {
-      this.searchContent = e.mp.detail.value;
-      this.search(this.searchContent);
+      this.search(this.value);
     },
     onClickHistory(key) {
       const list = this.searchHistory;
-      this.search(list[key]);
+      this.search(list[key].name);
     },
     search(value) {
-      wx.navigateTo({ url: `/pages/search/result?value=${value}` });
+      this.searchHistory.unshift({
+        name: value,
+      });
+      if (this.searchHistory.length > 10) {
+        this.searchHistory.pop();
+      }
+      wx.navigateTo({ url: `/pages/search/result?value=${value}&&index=${this.index}&&lang=${this.lang}` });
     },
   },
 };
@@ -120,18 +141,19 @@ export default {
   }
   .lang-switch{
     width: 100vw;
-    height: 5vh;
+    height: 83rpx;
     display: flex;
     justify-content: center;
-    margin-bottom: 2vh;
+    margin-bottom: 20rpx;
     button{
-      width: 45vw;
-      height: 5vh;
+      width: 338rpx;
+      height: 63rpx;
       background: none;
       border-bottom-left-radius: 0px;
       border-bottom-right-radius: 0px;
       border-style: none;
-      padding: 0px;
+      padding-left: 2.5rpx;
+      padding-right: 2.5rpx;
       image{
         width: 100%;
         height: 100%;
@@ -146,74 +168,91 @@ export default {
         top:0%;
         left: 0%;
         z-index: 10;
+        font-size: 30rpx;
       }
     }
   }
   .search-bar{
     width: 100vw;
-    height: 5vh;
+    height: 69rpx;
     margin-left: 4.5vw;
     display: flex;
     picker{
-      height: 5vh;
-      width: 25vw;
+      height: 69rpx;
+      width: 170rpx;
       border-style: solid;
-      border-radius: 5px;
-      border-width: 1px;
+      border-radius: 5rpx;
+      border-width: 1rpx;
       display: flex;
       align-items: center;
       span{
-        margin-left: 2vw;
+        margin-left: 31rpx;
+        color: #3b3b3b;
+        font-size: 30rpx;
+        margin-right: 27rpx
       }
       image{
-        width: 2vw;
-        height: 1vh;
+        width: 14rpx;
+        height: 14rpx;
       }
     }
     .input-container{
-      height: 5vh;
-      width: 63vw;
+      height: 69rpx;
+      width: 434rpx;
       display: flex;
       border-style: solid;
       border-radius: 5px;
       border-width: 1px;
       align-items: center;
-      margin-left: 2vw;
+      margin-left: 10rpx;
       image{
-        width: 5vw;
-        height: 5vw;
-        margin-left: 2vw;
-        margin-right: 2vw;
+        width: 35rpx;
+        height: 35rpx;
+        margin-left: 25rpx;
+        margin-right: 8rpx;
+      }
+    }
+    .search-search-button{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-left: 12rpx;
+      span{
+        color: #4a88dd;
+        font-size: 30rpx;
       }
     }
   }
   .search-history-bar{
-    color: grey;
+    color: #ABABAB;
     margin-left: 4.5vw;
     margin-right: 4.5vw;
-    margin-top: 2vh;
-    margin-bottom: 2vh;
+    margin-top: 48rpx;
+    margin-bottom: 24rpx;
     display: flex;
-    height: 5vh;
+    height: 29rpx;
     align-items: center;
+    font-size: 30rpx;
     image{
-      width: 5vw;
-      height: 5vw;
-      right: 4.5vw;
+      width: 31rpx;
+      height: 33rpx;
+      right: 49rpx;
       position: absolute;
     }
   }
   .search-history-container{
     display: flex;
     flex-wrap: wrap;
-    margin-left: 4.5vw;
-    margin-right: 4.5vw;
+    margin-left: 47rpx;
+    margin-right: 29rpx;
     button{
-      margin-left: 1vw;
-      margin-right: 1vw;
-      margin-top: 1vh;
-      color: grey;
+      margin-left: 0;
+      margin-right: 15rpx;
+      margin-top: 15rpx;
+      color: #777777;
       line-height: 5vh;
+      background-color: #EAEAEA;
+      font-size: 28rpx;
     }
   }
   .bk{
