@@ -1,7 +1,7 @@
 <template>
   <div class='search-result-card' @click=clickCard>
     <div class='title'>
-      <span class='index'>{{index}}&nbsp;&nbsp;</span>
+      <span class='index'>{{book.index + 1}}&nbsp;&nbsp;</span>
       <span class='name'>{{name}}</span>
     </div>
     <div class='author'>
@@ -9,7 +9,7 @@
       <span class='value'>{{author}}</span>
     </div>
     <div class='publish'>
-      <span class='key'>出版信息：</span>
+      <span class='key'>出版社：</span>
       <span class='value'>{{publish}}</span>
     </div>
   </div>
@@ -20,7 +20,7 @@ export default {
   name: 'SearchResultCard',
   props: {
     key: {
-      type: Number,
+      type: String,
       required: true,
       default: 0,
     },
@@ -39,6 +39,11 @@ export default {
       required: true,
       default: '',
     },
+    book: {
+      type: Object,
+      required: true,
+      default: {},
+    },
   },
   computed: {
     index() {
@@ -48,8 +53,10 @@ export default {
   methods: {
     clickCard() {
       const that = this;
-      this.$emit('click-card', that.key);
+      this.$emit('click-card', that.book);
     },
+  },
+  onLoad() {
   },
 };
 </script>

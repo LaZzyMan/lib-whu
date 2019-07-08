@@ -31,6 +31,18 @@
       "route": "pages/weike"
     },
     {
+      "path": "pages/freshman/curator",
+      "config":{
+      },
+      "route": "pages/curator"
+    },
+    {
+      "path": "pages/freshman/about",
+      "config":{
+      },
+      "route": "pages/about"
+    },
+    {
       "path": "pages/search",
       "config":{
       },
@@ -49,6 +61,12 @@
       "route": "pages/search/detail"
     },
     {
+      "path": "pages/search/rfid",
+      "config":{
+      },
+      "route": "pages/search/rfid"
+    },
+    {
       "path": "pages/borrow/borrow",
       "config":{
       },
@@ -59,6 +77,18 @@
       "config":{
       },
       "route": "pages/borrow/rank"
+    },
+    {
+      "path": "pages/borrow/reserve",
+      "config":{
+      },
+      "route": "pages/borrow/reserve"
+    },
+    {
+      "path": "pages/borrow/history",
+      "config":{
+      },
+      "route": "pages/borrow/history"
     },
     {
       "path": "pages/card/card",
@@ -73,6 +103,18 @@
       "route": "pages/suggest"
     },
     {
+      "path": "pages/information/information",
+      "config":{
+      },
+      "route": "pages/information"
+    },
+    {
+      "path": "pages/entry/entry",
+      "config":{
+      },
+      "route": "pages/entry"
+    },
+    {
       "path": "pages/seatReserve",
       "config":{
       },
@@ -83,6 +125,12 @@
       "config":{
       },
       "route": "pages/seatReserve/announcement"
+    },
+    {
+      "path": "pages/notice/activity",
+      "config":{
+      },
+      "route": "pages/notice/activity"
     },
     {
       "path": "pages/seatReserve/myReservation",
@@ -139,20 +187,20 @@
     "list": [
       {
         "pagePath": "pages/index",
-        "iconPath": "static/200/shouye@3x.png",
-        "selectedIconPath": "static/100/shouye_selected@3x.png",
+        "iconPath": "static/shouye@3x.png",
+        "selectedIconPath": "static/shouye_selected@3x.png",
         "text": "首页"
       },
       {
         "pagePath": "pages/find",
-        "iconPath": "static/100/yanjing@3x.png",
-        "selectedIconPath": "static/200/yanjing_selected@3x.png",
+        "iconPath": "static/yanjing@3x.png",
+        "selectedIconPath": "static/yanjing_selected@3x.png",
         "text": "发现"
       },
       {
         "pagePath": "pages/info",
-        "iconPath": "static/100/wo@3x.png",
-        "selectedIconPath": "static/320/wo_selected@3x.png",
+        "iconPath": "static/wo@3x.png",
+        "selectedIconPath": "static/wo_selected@3x.png",
         "text": "我的"
       }
     ]

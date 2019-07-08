@@ -1,13 +1,12 @@
 <template>
-<div class='borrow-list'>
-  <borrow-card
+<div class='history-list'>
+  <history-card
   v-for='(item, index) in result'
   :key=item.index
   :name=item.book_info.title
   :author=item.book_info.author
   :position=item.loan_info.sub_library
-  :from-time=item.loan_info.loan_date
-  :to-time=item.loan_info.due_date
+  :fromtime=item.loan_info.loan_date
   :is-selected=item.isSelected
   @click=onClickCard(item.index)
   />
@@ -15,12 +14,12 @@
 </template>
 
 <script>
-import borrowCard from '../card/borrowCard';
+import historyCard from '../card/historyCard';
 
 export default {
-  name: 'BorrowList',
+  name: 'historyList',
   components: {
-    borrowCard,
+    historyCard,
   },
   props: {
     result: {
@@ -39,7 +38,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.borrow-list{
+.history-list{
   margin: 3vw;
   margin-left: 8vw;
   height: 100%;

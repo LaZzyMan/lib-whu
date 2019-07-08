@@ -5,11 +5,6 @@
       <span class='author'>{{author}}&nbsp;著</span>
     </div>
     <div class='rate'>
-      <span class='key'>豆瓣评分：{{rate}}</span>
-      <vant-rate
-      :value=rate
-      readonly
-      />
     </div>
     <div class='times'>
       <span>借阅次数：{{borrowTimes}}次</span>
@@ -62,7 +57,7 @@ export default {
   methods: {
     clickCard() {
       const that = this;
-      this.$emit('click-card', that.key);
+      this.$emit('click-card', that.rank - 1);
     },
   },
 };
@@ -84,15 +79,16 @@ export default {
   position: relative;
   .title{
     display: flex;
-    font-size: 40rpx;
+    font-size: 30rpx;
     font-weight: bold;
     .name{
       margin-right: 4vw;
     }
     .author{
-      font-size: 30rpx;
-      font-weight: lighter;
+      font-size: 24rpx;
+      font-weight: normal;
       color: grey;
+      margin-top: 12rpx;
     }
   }
   .rate{
@@ -104,10 +100,11 @@ export default {
   }
   .times{
     display: flex;
-    font-size: 30rpx;
+    font-size: 24rpx;
+    margin-top: 20rpx;
     span{
       color: grey;
-      text-align: right;
+      text-align: left;
       flex: 1;
     }
   }

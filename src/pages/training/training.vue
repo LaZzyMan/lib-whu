@@ -17,16 +17,10 @@ import { searchLib } from '../../api';
 export default {
   mpType: 'page',
   onLoad(options) {
-    wx.showLoading({ title: '加载中...' });
-    const { value } = options;
-    const that = this;
-    searchLib({
-      _start: 0,
-      _limit: 10,
-    }).then((response) => {
-      that.result = response;
-      wx.hideLoading();
+    wx.setNavigationBarTitle({
+      title: '培训日程',
     });
+    this.result = {};
   },
   data: {
     result: {},
@@ -47,23 +41,12 @@ export default {
 <style lang="scss" scoped>
 .container{
   display: block;
-  padding: 0%;
-  padding-left: 4.5vw;
-  padding-right: 4.5vw;
-  padding-top: 2vh;
+  padding-left: 24rpx;
+  padding-right: 30rpx;
+  padding-top: 43rpx;
   background-color: #f7f7f7;
   height: 100vh;
-  .scroll-list{
-    height: 90vh;
-    width: 100%
-  }
-  .total{
-    display: flex;
-    justify-content: left;
-    width: 100%;
-    color: #777777;
-    margin-bottom: 1vh
-  }
+  width: 100vw;;
 }
 
 </style>

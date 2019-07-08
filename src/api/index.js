@@ -3,7 +3,21 @@ import request from './request';
 export function vertifySession(params) {
   console.log(params);
   return new Promise((resolve, reject) => {
-    request.get('/vertify', params)
+    console.log(request);
+    request.get('/user/vertify_session/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function updateSession(params) {
+  console.log(params);
+  return new Promise((resolve, reject) => {
+    request.get('/user/update_session/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -16,7 +30,20 @@ export function vertifySession(params) {
 export function vertifyLibAccount(params) {
   console.log(params);
   return new Promise((resolve, reject) => {
-    request.get('/libvertify', params)
+    request.get('/libuser/login/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function reserveBook(params) {
+  console.log(params);
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/hold_req/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -28,7 +55,7 @@ export function vertifyLibAccount(params) {
 
 export function login(params) {
   return new Promise((resolve, reject) => {
-    request.get('/login', params)
+    request.get('/user/login/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -40,7 +67,7 @@ export function login(params) {
 
 export function bindLib(params) {
   return new Promise((resolve, reject) => {
-    request.post('/account', params)
+    request.get('/user/bind_lib/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -50,9 +77,34 @@ export function bindLib(params) {
   });
 }
 
+export function unbindLib(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/user/unbind_lib/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function findLib(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/find/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+
 export function searchLib(params) {
   return new Promise((resolve, reject) => {
-    request.get('/searchlib', params)
+    request.get('/libuser/present/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -64,7 +116,55 @@ export function searchLib(params) {
 
 export function getRank(params) {
   return new Promise((resolve, reject) => {
-    request.get('/rank', params)
+    request.get('/libuser/bor_rank/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function getVisitInfo(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/visit_info/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function getActivity(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/activity/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function getAdvise(params) {
+  return new Promise((resolve, reject) => {
+    request.post('/advise/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function getBorInfo(params) {
+  return new Promise((resolve, reject) => {
+    request.get('libuser/bor_info/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -76,8 +176,9 @@ export function getRank(params) {
 
 export function getNotice(params) {
   return new Promise((resolve, reject) => {
-    request.get('/notice', params)
+    request.get('/notice/', params)
       .then((response) => {
+        console.log(response.data);
         resolve(response.data);
       })
       .catch(() => {
@@ -88,7 +189,55 @@ export function getNotice(params) {
 
 export function getBorrowInfo(params) {
   return new Promise((resolve, reject) => {
-    request.get('/borrowinfo', params)
+    request.get('/libuser/borrow_info/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function getLoanInfo(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/hold_info/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function getLoanHistory(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/loan_history/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function holdReqCancel(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/hold_req_cancel/', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+}
+
+export function borrowRenew(params) {
+  return new Promise((resolve, reject) => {
+    request.get('/libuser/renew/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -100,7 +249,7 @@ export function getBorrowInfo(params) {
 
 export function getBookDetail(params) {
   return new Promise((resolve, reject) => {
-    request.get('/detail', params)
+    request.get('/libuser/book_detail/', params)
       .then((response) => {
         resolve(response.data);
       })
@@ -112,7 +261,7 @@ export function getBookDetail(params) {
 
 export function getTestData(params) {
   return new Promise((resolve, reject) => {
-    request.get('/test', params)
+    request.get('/test/', params)
       .then((response) => {
         resolve(response.data);
       })

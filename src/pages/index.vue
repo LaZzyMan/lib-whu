@@ -1,30 +1,30 @@
 <template>
   <div class='index-view'>
     <div class='index-image'>
-      <image src='/static/100/1_100首页.png'/>
+      <image src='https://system.lib.whu.edu.cn/mp-static/100/1_100首页.png'/>
     </div>
     <div class='index-search'>
       <button type='default' @click='onSearch'>
-        <image src='/static/100/sousuo@3x.png'/>
+        <image src='https://system.lib.whu.edu.cn/mp-static/100/sousuo@3x.png'/>
         <span>&nbsp;点击搜索馆藏资源</span>
       </button>
     </div>
     <div class='index-command'>
-      <image src='/static/100/个性@3x.png'/>
+      <image src='https://system.lib.whu.edu.cn/mp-static/100/个性@3x.png'/>
       <span>&nbsp;推荐功能&nbsp;&nbsp;</span>
     </div>
     <div class='index-button-container'>
       <button type='default' @click='toSeat'>
-        <image src='/static/100/座位预约@3x.png' mode='aspectFit'/>
+        <image src='https://system.lib.whu.edu.cn/mp-static/100/座位预约@3x.png' mode='aspectFit'/>
       </button>
       <button type='default' @click='toBorrow'>
-        <image src='/static/100/借阅@3x.png' mode='aspectFit'/>
+        <image src='https://system.lib.whu.edu.cn/mp-static/100/借阅@3x.png' mode='aspectFit'/>
       </button>
       <button type='default' @click='toRank'>
-        <image src='/static/100/借阅排行@3x.png' mode='aspectFit'/>
+        <image src='https://system.lib.whu.edu.cn/mp-static/100/借阅排行@3x.png' mode='aspectFit'/>
       </button>
       <button type='default' @click='toNotice'>
-        <image src='/static/100/通知公告@3x.png' mode='aspectFit'/>
+        <image src='https://system.lib.whu.edu.cn/mp-static/100/通知公告@3x.png' mode='aspectFit'/>
       </button>
     </div>
   </div>
@@ -37,7 +37,9 @@ export default {
   mpType: 'page',
   onLoad() {
     const session = wx.getStorageSync('session') || '';
-    this.$store.dispatch('setSession', session);
+    const libUser = wx.getStorageSync('libUser') || '';
+    console.log(libUser);
+    this.$store.dispatch('vertifyLogin', { ses: session, user: libUser });
   },
 
   data() {
@@ -54,18 +56,46 @@ export default {
       wx.navigateTo({ url });
     },
     toSeat() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/seatReserve';
       wx.navigateTo({ url });
     },
     toBorrow() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/borrow';
       wx.navigateTo({ url });
     },
     toRank() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/borrow/rank';
       wx.navigateTo({ url });
     },
     toNotice() {
+      if (!this.$store.getters.getLibBind) {
+        let url;
+        if (this.$store.getters.getLogin) url = '/pages/login';
+        else url = '/pages/login?type=login';
+        wx.navigateTo({ url });
+        return;
+      }
       const url = '/pages/notice';
       wx.navigateTo({ url });
     },

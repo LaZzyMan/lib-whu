@@ -1,6 +1,6 @@
 <template>
   <web-view
-  src='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx311d49281953c3fb&redirect_uri=https%3a%2f%2fsystem.lib.whu.edu.cn%2flibseat-wechat%2findex&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
+  :src="url"
   @load=webLoad
   />
 </template>
@@ -8,13 +8,18 @@
 <script>
 export default {
   mpType: 'page',
-  onLoad() {
+  onLoad(options) {
     wx.showLoading({ title: '加载中...' });
+    this.url = this.$store.getters.getActivityUrl;
+    console.log(this.$store.getters.getActivityUrl);
   },
   methods: {
     webLoad(e) {
       wx.hideLoading();
     },
+  },
+  data: {
+    url: '',
   },
 };
 </script>

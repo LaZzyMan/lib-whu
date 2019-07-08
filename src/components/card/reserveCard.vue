@@ -1,15 +1,12 @@
 <template>
-  <div class='borrow-card' :class="{ 'selected': isSelected }" @click=onClick>
+  <div class='reserve-card' :class="{ 'selected': isSelected }" @click=onClick>
     <div class='circle'/>
     <div class='line'/>
     <div class='title'>
       <span class='name'>{{name}}</span>
+      <span class='name'>&nbsp;{{position}}</span>
     </div>
     <div class='info'>
-      <span class='author'>{{author}}&nbsp;著</span>
-    </div>
-    <div class='info'>
-      <span class='position'>{{position}}</span>
       <span class='time'>{{fromTime}}至{{toTime}}</span>
     </div>
     <button class='ratio'>
@@ -20,7 +17,7 @@
 
 <script>
 export default {
-  name: 'BorrowCard',
+  name: 'reserveCard',
   props: {
     key: {
       type: Number,
@@ -74,7 +71,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.borrow-card{
+.reserve-card{
   margin-top: 2%;
   margin-bottom: 2%;
   border-style: solid;
@@ -109,19 +106,18 @@ export default {
   }
   .title{
     display: flex;
-    font-size: 30rpx;
+    font-size: 40rpx;
     align-items: center;
-    font-weight: bold;
-    color: #525252;
+    color: #444444;
     margin-top: 1.5vh;
     margin-bottom: 1.5vh;
     .name{
       margin-right: 4vw;
     }
     .author{
-      font-size: 24rpx;
-      font-weight: normal;
-      color: #777777;
+      font-size: 30rpx;
+      font-weight: lighter;
+      color: grey;
     }
   }
   .info{
