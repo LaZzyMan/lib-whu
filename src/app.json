@@ -25,6 +25,12 @@
       "route": "pages/training"
     },
     {
+      "path": "pages/training/pastTraining",
+      "config":{
+      },
+      "route": "pages/pastTraining"
+    },
+    {
       "path": "pages/weike/weike",
       "config":{
       },
@@ -47,6 +53,12 @@
       "config":{
       },
       "route": "pages/students"
+    },
+    {
+      "path": "pages/freshman/use",
+      "config":{
+      },
+      "route": "pages/use"
     },
     {
       "path": "pages/search",
@@ -190,6 +202,12 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTextStyle": "black"
+  },
+  "plugins": {
+    "tencentvideo": {
+      "version": "1.3.6",
+      "provider": "wxa75efa648b60994b"
+    }
   },
   "tabBar": {
     "backgroundColor": "#ffffff",
