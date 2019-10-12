@@ -199,19 +199,16 @@ export default {
       this.type = 2;
     },
     onB(key) {
-      if (true) {
-        this.showFalse = true;
-        return;
-      }
-      if (this.result[this.type][key].selected) {
-        this.text = '取消提醒';
-        this.title = '';
-      } else {
-        this.text = '我们将在培训开始前一小时向您发送推送提醒';
-        this.title = '确定提醒？';
-      }
-      this.showModal = true;
-      this.key = key;
+      this.showFalse = true;
+      // if (this.result[this.type][key].selected) {
+      //   this.text = '取消提醒';
+      //   this.title = '';
+      // } else {
+      //   this.text = '我们将在培训开始前一小时向您发送推送提醒';
+      //   this.title = '确定提醒？';
+      // }
+      // this.showModal = true;
+      // this.key = key;
     },
     onCancel() {
       this.showModal = false;

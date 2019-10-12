@@ -1,15 +1,15 @@
 <script>
 export default {
   globalConfig: {
-    usingComponents: {
-      'van-rate': 'vant-weapp/dist/rate/index',
-      'van-tabbar': 'vant-weapp/dist/tabbar/index',
-      'van-tabbar-item': 'vant-weapp/dist/tabbar-item/index',
-      'van-tag': 'vant-weapp/dist/tag/index',
-      'van-field': 'vant-weapp/dist/field/index',
-      'van-search': 'vant-weapp/dist/search/index',
-      'van-icon': 'vant-weapp/dist/icon/index',
-    },
+    // usingComponents: {
+    //   'van-rate': 'vant-weapp/dist/rate/index',
+    //   'van-tabbar': 'vant-weapp/dist/tabbar/index',
+    //   'van-tabbar-item': 'vant-weapp/dist/tabbar-item/index',
+    //   'van-tag': 'vant-weapp/dist/tag/index',
+    //   'van-field': 'vant-weapp/dist/field/index',
+    //   'van-search': 'vant-weapp/dist/search/index',
+    //   'van-icon': 'vant-weapp/dist/icon/index',
+    // },
   },
   created() {
   },
